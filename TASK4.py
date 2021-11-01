@@ -6,22 +6,25 @@ import numpy as np
 
 def normalisation(signal):
     max_value = float(np.max(signal))
-    print("max", max_value)
     min_value = float(np.min(signal))
-    print("min", min_value)
     normalized_signal = (signal - min_value) / (max_value - min_value)
     return normalized_signal
 
+
 fs = 16000
-encframewk8bit('Track16.wav')
-decframewk8bit('encoded8bit.bin', fs)
-[s, rate] = snd.wavread('decoded_8bit.wav')
-[original, rate] = snd.wavread('Track16.wav')
+encframewk8bit('Track16.wav')  # converting to 8-bit binary file
+decframewk8bit('encoded8bit.bin', fs) # converting in wav file
+[s, rate] = snd.wavread('decoded_8bit.wav')  # Reconstructed 8-bit signal
+[original, rate] = snd.wavread('Track16.wav')  # Original wave signal
 snd.sound(s, 16000)
 
 fig, ax = plt.subplots()
-
-ax.plot(normalisation(original[:, 0]))
-ax.plot(normalisation(s[:, 0]))
+# Plotting
+ax.plot(normalisation(original[:, 0]), 'r--', linewidth=2)
+ax.plot(normalisation(s[:, 0]), linewidth=0.5)
+ax.legend(['16-bit', '8-bit'])
+ax.set_title('Original and reconstructed signals')
+ax.set_xlabel('samples')
+ax.set_ylabel('Amplitude')
 
 plt.show()

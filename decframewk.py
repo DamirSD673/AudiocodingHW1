@@ -2,7 +2,7 @@ import pickle
 from scipy.io import wavfile
 
 
-fs = int(16e3)
+fs = 16000
 
 s = pickle.loads('encoded.bin')
 
