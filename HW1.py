@@ -1,7 +1,7 @@
 import sound as snd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.fftpack import fft
+from scipy.fftpack import fft, fftshift
 
 
 def normalisation(signal):
@@ -14,8 +14,9 @@ def FFT(signal, channel, N_FFT, N_blocks):
     fig, ax = plt.subplots()
     for i in range(N_blocks):
         x = signal[i*N_FFT:(i+1)*N_FFT - 1, channel] # block-wise FFT
-        X = 20*np.log10(np.abs(fft(x))) # logarithmic scale
-        ax.plot((np.linspace(0, np.pi, N_FFT - 1, endpoint=True)), X)
+        x_hat = fftshift(fft(x))
+        X = 20*np.log10(np.abs(x_hat)) # logarithmic scale
+        ax.plot((np.linspace(-np.pi/2, np.pi/2, N_FFT - 1, endpoint=True)), X)
 
     ax.legend(range(N_blocks))
     ax.set_xlabel('Normalized frequency')
