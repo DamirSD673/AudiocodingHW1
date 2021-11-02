@@ -14,9 +14,9 @@ def normalisation(signal):
 fs = 16000
 encframewk8bit('Track16.wav')  # converting to 8-bit binary file
 decframewk8bit('encoded8bit.bin', fs) # converting in wav file
-[s, rate] = snd.wavread('decoded_8bit.wav')  # Reconstructed 8-bit signal
-[original, rate] = snd.wavread('Track16.wav')  # Original wave signal
-snd.sound(s, 16000)
+[s, rate_r, bytes_r] = snd.wavread('decoded_8bit.wav')  # Reconstructed 8-bit signal
+[original, rate, bytes] = snd.wavread('Track16.wav')  # Original wave signal
+snd.sound(s, rate_r)
 
 fig, ax = plt.subplots()
 # Plotting

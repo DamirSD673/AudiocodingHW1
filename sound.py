@@ -62,7 +62,7 @@ def wavread(sndfile):
    shorts=np.array(shorts)
    if nchan> 1:
       shorts=np.reshape(shorts,(-1,nchan))
-   return shorts, rate;
+   return shorts, rate, bytes;
 
 
 def wavwrite(snd,Fs,sndfile):

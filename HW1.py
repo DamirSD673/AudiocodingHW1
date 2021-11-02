@@ -24,11 +24,15 @@ def FFT(signal, channel, N_FFT, N_blocks):
 
 
 # Task 1
-[s, rate] = snd.wavread('Track16.wav')
-snd.sound(s, 16000)
+
+[s, rate, bytes] = snd.wavread('Track16.wav')
+
+#snd.sound(s, rate)
 N = len(s)
 
-s_hat = s[int(N/2):int(N/2)+16000*8] # elements from middle and 8 sec
+print('Number of bits of the signal:', N*bytes*8)
+
+s_hat = s[int(N/2):int(N/2)+rate*8] # elements from middle and 8 sec
 s_normalized = normalisation(s_hat)  # normalisation process
 
 
@@ -39,6 +43,6 @@ ax1.set_title('First channel')
 ax2.set_title('Second channel')
 
 # Task 2
-FFT(s_normalized, 0, 1024, 4)
+FFT(s_hat, 0, 1024, 4)
 
 plt.show()
