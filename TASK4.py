@@ -1,6 +1,6 @@
 from encframewk8bit import encframewk8bit
 from decframewk8bit import decframewk8bit
-import sound as snd
+from HW2 import sound as snd
 import matplotlib.pyplot as plt
 import numpy as np
 

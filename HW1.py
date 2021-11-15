@@ -1,4 +1,4 @@
-import sound as snd
+from HW2 import sound as snd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fftpack import fft, fftshift
