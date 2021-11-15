@@ -5,16 +5,16 @@ import sound as snd
 
 #  Task 2
 # Ramp function
-sample = np.arange(44100)/44100
+x = np.arange(44100) / 44100
 # MDCT
 N = 512
-Y = DirectMDCT(sample, N)
+Y = DirectMDCT(x, N)
 # Reconstruction
 X_hat = SyntesisMDCT(Y, N)
 
 # Plotting
 fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(12, 5))
-ax.plot(sample)
+ax.plot(x)
 ax.plot(X_hat)
 ax.legend("Original", "Reconstructed")
 ax.title("Original and Reconstructed signals")
