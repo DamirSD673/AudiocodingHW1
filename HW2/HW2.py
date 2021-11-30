@@ -23,7 +23,7 @@ ax.legend(["Original", "Reconstructed"])
 # Task 3
 [s, rate, bytes] = snd.wavread('Track16.wav')
 N_s = len(s)
-seconds = 2
+seconds = 3
 s_hat = s[int(N_s/2):int(N_s/2)+rate*seconds] # elements from middle and 8 sec
 s_hat = s_hat[:, 0]
 
