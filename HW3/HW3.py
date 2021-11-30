@@ -42,8 +42,7 @@ class Huffman:
             key = lambda x: x.value
             nodes[-1] = sorted(nodes[-1], key=key)
             k = 0
-            while (len(nodes[-1]) > 1) and (k < 256):
-                k += 1
+            while (len(nodes[-1]) > 1):
                 # print(self.nodes)
                 new_value = nodes[-1][0].value + nodes[-1][1].value
                 # print((self.nodes[-1][0].symbols))
@@ -63,6 +62,7 @@ class Huffman:
                 cod = ''
                 # print('len_dict:', len(self.sorted_dict))
                 for k in range(len(dictionaryy[ii])):
+                    print(k)
                     if x.par_left:
                         x = x.par_left
                         if x is None:
@@ -80,7 +80,7 @@ class Huffman:
             decodbooks.append(decod_dict)
             whole_signal.extend(coded_signal)
 
-        return whole_signal, decodbooks, stepsize, lengths
+        return whole_signal, decodbooks, stepsize, lengths, sig8bit
 
 
 
@@ -96,8 +96,7 @@ class Huffman:
                 frequency[sample] += 1
 
             frequency_array.append(dict(
-                sorted(frequency.items(), key=lambda item: item[1],
-                       reverse=False)))
+                sorted(frequency.items(), key=lambda item: item[1])))
 
         return frequency_array, sig8bit, stepsize
 
@@ -128,17 +127,36 @@ def encode(signal ,cod_dict):
     coded_signal = bitarray(output)
     return coded_signal, decod_dict
 
-
 def quantize8it(signal):
     step = (np.amax(signal, axis=0) - np.amin(signal, axis=0))/2 ** 8
     s8bit = (signal / step[None, :]).astype(np.int8)
     return s8bit, step
 
+def decoding(signal_hat, decodbooks_hat, lengths_hat, step_hat, original, N):
+    r = 0
+    decoded = np.zeros_like(original, dtype=np.float)
+    for i in range(N):
+        temp = signal_hat[r:r + lengths_hat[i]]
+        temp2 = decodbooks_hat[i]
+        restored = []
+        buffer = ''
+        for j, v in enumerate(temp):
+            buffer += str(v)
+            if buffer in temp2:
+                restored.append(temp2[buffer])
+                buffer = ''
+        r += lengths_hat[i]
+        temp3 = np.array(restored)
+        temp4 = step_hat[i]
+        temp5 = temp3 * temp4
+        decoded[:, i] = np.array(temp5)
+    return decoded
+
 # Activate coder
 seconds = 3
 N = 32 # Subbands
 coder = Huffman('Track16.wav', N, seconds)
-[whole_signal, decodbooks, stepsizes, lengths] = coder.tree()
+[whole_signal, decodbooks, stepsizes, lengths, original] = coder.tree()
 
 # Preapare binary files
 binary_mdct = 'binary_mdct.bin'
@@ -165,3 +183,19 @@ pickle.dump([stepsizes, decodbooks, whole_signal, lengths], open(binary_huffman,
 
 print(os.path.getsize(binary_mdct) / 1024)
 print(os.path.getsize(binary_huffman) / 1024)
+
+# Open file
+[step_hat, decodbooks_hat, signal_hat, lengths_hat] = pickle.load(open(binary_huffman, "rb"))
+
+# Decoding
+y = decoding(signal_hat, decodbooks_hat, lengths_hat, step_hat, original, N)
+y_hat = SyntesisMDCT(y, N)
+y_hat_1 = np.reshape(y_hat, [np.int(len(y_hat)/2), 2])
+print(1)
+
+fig, [ax, ax1] = plt.subplots(nrows=2, figsize=(12, 6))
+ax.plot(y_hat_1[:, 0])
+ax.plot(s_hat[:, 1])
+ax1.plot(y_hat_1[:, 1])
+ax1.plot(s_hat[:, 0])
+plt.show()
